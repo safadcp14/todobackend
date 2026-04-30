@@ -141,6 +141,14 @@ app.delete('/todos/:id', async (req, res) => {
 app.get("/", (req, res) => {
   res.json({ msg: "Backend is running" });
 });
+
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    status: "ok",
+    service: "todobackend",
+    timestamp: new Date().toISOString()
+  });
+});
 // 🔐 Login
 app.post('/login', async (req, res) => {
     try {
