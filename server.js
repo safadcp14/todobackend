@@ -4,7 +4,6 @@ const bcrypt = require('bcrypt')
 const cors = require("cors");
 
 const app = express()
-app.use(express.json())
 
 const allowedOrigins = [
   "https://todofrontend-kohl.vercel.app"
@@ -23,7 +22,9 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+
 app.options('/{*splat}', cors(corsOptions));
+app.use(express.json())
 
 // 🔌 MongoDB connection
 const PORT = process.env.PORT || 3000;
@@ -171,6 +172,6 @@ app.use((err, req, res, next) => {
 
 
 // 🚀 Server
-app.listen(PORT, () => {
-    console.log(`Server running on ${PORT}`)
-})
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`Server running on ${PORT}`);
+});
