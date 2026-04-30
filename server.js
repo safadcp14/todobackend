@@ -5,7 +5,25 @@ const cors = require("cors");
 
 const app = express()
 app.use(express.json())
-app.use(cors());
+
+const allowedOrigins = [
+  "https://todofrontend-kohl.vercel.app"
+];
+
+const corsOptions = {
+  origin(origin, callback) {
+    // Allow non-browser tools (curl/postman) with no Origin header.
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin)) return callback(null, true);
+    return callback(new Error("CORS blocked for this origin"));
+  },
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
 // 🔌 MongoDB connection
 const PORT = process.env.PORT || 3000;
@@ -118,6 +136,10 @@ app.delete('/todos/:id', async (req, res) => {
     res.status(500).json({ msg: 'Error' });
   }
 });
+
+app.get("/", (req, res) => {
+  res.json({ msg: "Backend is running" });
+});
 // 🔐 Login
 app.post('/login', async (req, res) => {
     try {
@@ -139,6 +161,13 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ msg: 'Error', err })
     }
 })
+
+app.use((err, req, res, next) => {
+  if (err && err.message === "CORS blocked for this origin") {
+    return res.status(403).json({ msg: err.message });
+  }
+  return next(err);
+});
 
 
 // 🚀 Server
