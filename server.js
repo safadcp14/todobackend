@@ -131,6 +131,9 @@ app.put('/todos/:id', async (req, res) => {
 
 app.delete('/todos/:id', async (req, res) => {
   try {
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
+      return res.status(400).json({ msg: 'Invalid todo id' });
+    }
     await Todo.findByIdAndDelete(req.params.id);
     res.json({ msg: 'Deleted' });
   } catch (err) {
