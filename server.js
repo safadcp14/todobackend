@@ -23,7 +23,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('/{*any}', cors(corsOptions));
+app.options('/{*splat}', cors(corsOptions));
 
 // 🔌 MongoDB connection
 const PORT = process.env.PORT || 3000;
